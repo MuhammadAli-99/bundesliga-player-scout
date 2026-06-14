@@ -12,7 +12,7 @@ LEAGUES = [
     "ITA-Serie A",
     "FRA-Ligue 1",
 ]
-SEASON = "2324"
+SEASON = "2526"
 
 MERGE_KEYS = ["league", "season", "team", "player"]
 
