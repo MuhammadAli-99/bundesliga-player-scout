@@ -58,15 +58,17 @@ unidecode + rapidfuzz.
   player name fuzz.token_set_ratio >= 80
 - Stage 2: league-wide pool (no team restriction), token_set_ratio >= 96 (strict,
   avoids false positives)
-- Stage 3 (NEWLY WRITTEN, NOT YET TESTED): for still-unmatched players, search
-  ENTIRE FIFA dataset (all 43 leagues, not just our 5) — catches players who
+- Stage 3 (COMPLETE, TESTED): for still-unmatched players, search ENTIRE FIFA
+  dataset (all 43 leagues / 18405 players, not just our 5) — catches players who
   transferred outside our 5 competitions. Uses token_set_ratio >= 85 PLUS requires
   FIFA age within ±1 year of FBref age as independent corroborating signal
   (record-linkage technique — two weak signals combine into one confident match)
 
-Current status before Stage 3: 83.3% match rate (2364/2839), spot-checks on
-Kimmich/Kane/Neuer all scored 100.0 correctly. "Iago" and "Ritsu Doan" didn't match
-in earlier tests — likely genuinely absent from FIFA26 or transferred recently.
+Current status: 90.0% match rate (2554/2839) — Stage 1: 2270, Stage 2: 94,
+Stage 3: 190. Kimmich/Kane/Neuer all score 100.0. Ritsu Doan genuinely absent
+from FIFA26. Stage 3 sample checked: all matches verified (e.g. Gregoritsch →
+Brøndby, Kalimuendo → Nottingham Forest, Röhl → Everton). Remaining 285
+unmatched are fringe squad players not in FC26 dataset.
 
 ## Project Structure
 
@@ -76,7 +78,7 @@ bundesliga-player-scout/
 
 │   ├── data_pipeline.py      # FBref scraping (DONE)
 
-│   ├── merge_data.py          # FBref + FIFA merge, 3-stage matching (Stage 3 untested)
+│   ├── merge_data.py          # FBref + FIFA merge, 3-stage matching (DONE — 90% match rate)
 
 │   ├── feature_engineering.py # EMPTY — next phase
 
@@ -95,10 +97,7 @@ bundesliga-player-scout/
 ├── .env, .gitignore, requirements.txt
 
 ## Immediate Next Steps
-1. Run `python -m app.merge_data` (Stage 3 version) — verify match rate improves
-   beyond 83.3%, sanity-check the Stage 3 sample matches (age-verified) for false
-   positives
-2. Phase 2 — `feature_engineering.py`: per-90 metrics, performance index,
+1. Phase 2 — `feature_engineering.py`: per-90 metrics, performance index,
    age-value curve, contract urgency flag
 3. Phase 3 — `model.py`: XGBoost regressor predicting value_eur, evaluate MAE/R²,
    feature importance chart
